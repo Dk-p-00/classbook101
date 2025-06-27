@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Classes from "./pages/Classes";
 import ClassDetail from "./pages/ClassDetail";
 import Profile from "./pages/Profile";
+import Instructors from "./pages/Instructors";
+import Community from "./pages/Community";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,9 +27,9 @@ const App = () => (
           <Route path="/classes/:category" element={<Classes />} />
           <Route path="/class/:id" element={<ClassDetail />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/instructors" element={<Index />} />
-          <Route path="/community" element={<Index />} />
-          <Route path="/about" element={<Index />} />
+          <Route path="/instructors" element={<Instructors />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
