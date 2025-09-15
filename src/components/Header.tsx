@@ -4,18 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Menu, X, User, Calendar as CalendarIcon, Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Menu, X, User, Calendar as CalendarIcon, Search, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SearchModal } from "./SearchModal";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useDateFilter } from "@/context/DateFilterContext";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const { selectedDate, setSelectedDate } = useDateFilter();
+  const { user, signOut, loading } = useAuth();
 
   return (
     <>
@@ -103,13 +106,39 @@ export const Header = () => {
                   </div>
                 </PopoverContent>
               </Popover>
-              <Button variant="outline" size="sm" className="rounded-full">
-                <User className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-              <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full">
-                Get Started
-              </Button>
+              {!loading && (
+                user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="rounded-full">
+                        <User className="h-4 w-4 mr-2" />
+                        {user.email?.split('@')[0]}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link to="/profile">Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={signOut}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" className="rounded-full" asChild>
+                      <Link to="/auth">
+                        <User className="h-4 w-4 mr-2" />
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full" asChild>
+                      <Link to="/auth">Get Started</Link>
+                    </Button>
+                  </>
+                )
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -149,13 +178,34 @@ export const Header = () => {
                     <Search className="h-4 w-4 mr-2" />
                     Search
                   </Button>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <User className="h-4 w-4 mr-2" />
-                    Sign In
-                  </Button>
-                  <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full">
-                    Get Started
-                  </Button>
+                  {!loading && (
+                    user ? (
+                      <>
+                        <Button variant="outline" size="sm" className="rounded-full" asChild>
+                          <Link to="/profile">
+                            <User className="h-4 w-4 mr-2" />
+                            Profile
+                          </Link>
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={signOut} className="rounded-full">
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Sign Out
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button variant="outline" size="sm" className="rounded-full" asChild>
+                          <Link to="/auth">
+                            <User className="h-4 w-4 mr-2" />
+                            Sign In
+                          </Link>
+                        </Button>
+                        <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full" asChild>
+                          <Link to="/auth">Get Started</Link>
+                        </Button>
+                      </>
+                    )
+                  )}
                 </div>
               </nav>
             </div>

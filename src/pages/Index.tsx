@@ -176,8 +176,8 @@ const Index = () => {
         <div className="max-w-7xl mx-auto text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to Start Learning?</h3>
           <p className="text-slate-300 mb-6">Join thousands of students already mastering their craft</p>
-          <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full px-8 py-3 text-lg font-semibold animate-glow">
-            Get Started Today
+          <Button className="bg-gradient-to-r from-violet-500 to-aqua-400 hover:from-violet-600 hover:to-aqua-500 rounded-full px-8 py-3 text-lg font-semibold animate-glow" asChild>
+            <Link to="/auth">Get Started Today</Link>
           </Button>
         </div>
       </footer>
