@@ -2,13 +2,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, User, Calendar, Search } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Menu, X, User, Calendar as CalendarIcon, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SearchModal } from "./SearchModal";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useDateFilter } from "@/context/DateFilterContext";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const { selectedDate, setSelectedDate } = useDateFilter();
 
   return (
     <>
@@ -49,9 +56,53 @@ export const Header = () => {
               >
                 <Search className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="rounded-full">
-                <Calendar className="h-4 w-4" />
-              </Button>
+              <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className={cn(
+                      "rounded-full",
+                      selectedDate && "bg-violet-50 text-violet-600 border-violet-200"
+                    )}
+                  >
+                    <CalendarIcon className="h-4 w-4" />
+                    {selectedDate && (
+                      <span className="ml-2 text-xs">{format(selectedDate, "MMM dd")}</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-3">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        setSelectedDate(date);
+                        setIsCalendarOpen(false);
+                      }}
+                      initialFocus
+                      className="pointer-events-auto"
+                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    />
+                    {selectedDate && (
+                      <div className="pt-3 border-t border-slate-200 mt-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedDate(undefined);
+                            setIsCalendarOpen(false);
+                          }}
+                          className="w-full"
+                        >
+                          Clear Date
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
               <Button variant="outline" size="sm" className="rounded-full">
                 <User className="h-4 w-4 mr-2" />
                 Sign In

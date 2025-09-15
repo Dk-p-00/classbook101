@@ -8,12 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Filter, Clock, Users, User } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ClassCard } from "@/components/ClassCard";
+import { useDateFilter } from "@/context/DateFilterContext";
+import { format, isSameDay } from "date-fns";
 
 const Classes = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [sortBy, setSortBy] = useState("popular");
+  const { selectedDate } = useDateFilter();
 
   const allClasses = [
     {
@@ -26,7 +29,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=300&fit=crop",
       category: "Singing",
       duration: "60 min",
-      students: 24
+      students: 24,
+      date: new Date(2025, 0, 15) // Jan 15, 2025
     },
     {
       id: 2,
@@ -38,7 +42,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=400&h=300&fit=crop",
       category: "Dance",
       duration: "90 min",
-      students: 15
+      students: 15,
+      date: new Date(2025, 0, 16) // Jan 16, 2025
     },
     {
       id: 3,
@@ -50,7 +55,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=400&h=300&fit=crop",
       category: "Sports",
       duration: "120 min",
-      students: 18
+      students: 18,
+      date: new Date(2025, 0, 17) // Jan 17, 2025
     },
     {
       id: 4,
@@ -62,7 +68,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400&h=300&fit=crop",
       category: "Singing",
       duration: "75 min",
-      students: 12
+      students: 12,
+      date: new Date(2025, 0, 18) // Jan 18, 2025
     },
     {
       id: 5,
@@ -74,7 +81,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
       category: "Dance",
       duration: "120 min",
-      students: 20
+      students: 20,
+      date: new Date(2025, 0, 19) // Jan 19, 2025
     },
     {
       id: 6,
@@ -86,7 +94,8 @@ const Classes = () => {
       image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=300&fit=crop",
       category: "Sports",
       duration: "90 min",
-      students: 16
+      students: 16,
+      date: new Date(2025, 0, 20) // Jan 20, 2025
     }
   ];
 
@@ -95,8 +104,9 @@ const Classes = () => {
                          classItem.instructor.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || classItem.category.toLowerCase() === selectedCategory;
     const matchesType = selectedType === "all" || classItem.type.toLowerCase() === selectedType;
+    const matchesDate = !selectedDate || isSameDay(classItem.date, selectedDate);
     
-    return matchesSearch && matchesCategory && matchesType;
+    return matchesSearch && matchesCategory && matchesType && matchesDate;
   });
 
   return (
@@ -175,6 +185,11 @@ const Classes = () => {
           <div className="flex justify-between items-center mb-6">
             <p className="text-slate-600">
               Showing {filteredClasses.length} classes
+              {selectedDate && (
+                <span className="ml-2 text-violet-600 font-medium">
+                  for {format(selectedDate, "MMMM dd, yyyy")}
+                </span>
+              )}
             </p>
             <Button variant="outline" className="gap-2">
               <Filter className="h-4 w-4" />
